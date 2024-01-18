@@ -57,16 +57,28 @@ class MainWindow(QMainWindow):
         folder_path = QFileDialog.getExistingDirectory(self, "选择文件夹")
         print(f"Selected fold_path: {folder_path}")
 
-        is_succeed, msg_txt = Photo.check_photos(folder_path)
-        if is_succeed:
+        is_succeed, msg_txt, ok_photo_paths = Photo.check_photos(folder_path)
+        display_photo = False
+        if not is_succeed:
+            self.show_error_messagebox(msg_txt)
+        elif msg_txt:
+            res = QMessageBox.warning(None, 
+                                      "错误", 
+                                      f"{msg_txt}\n\n虽然有上面的文件格式有问题，但还是有符合格式要求的文件，是否继续?",
+                                      QMessageBox.Yes, QMessageBox.No,
+                                      defaultButton=QMessageBox.Yes)
+            if res == QMessageBox.Yes:
+                display_photo = True
+        else:
+            display_photo = True
+
+        if display_photo:
             self.stats = Stats()
-            photos = Photo.get_photos(folder_path)
+            photos = Photo.get_photos(ok_photo_paths)
             for photo in photos:
                 self.show_photo_dialog(photo, self.stats)
 
             self.on_history_triggered()
-        else:
-            self.show_error_messagebox(msg_txt)
 
     def on_history_triggered(self):
         print("Show history...")
