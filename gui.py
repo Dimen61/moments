@@ -65,8 +65,7 @@ class MainWindow(QMainWindow):
             res = QMessageBox.warning(None, 
                                       "错误", 
                                       f"{msg_txt}\n\n虽然有上面的文件格式有问题，但还是有符合格式要求的文件，是否继续?",
-                                      QMessageBox.Yes, QMessageBox.No,
-                                      defaultButton=QMessageBox.Yes)
+                                      QMessageBox.Yes, QMessageBox.No)
             if res == QMessageBox.Yes:
                 display_photo = True
         else:
